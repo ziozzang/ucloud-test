@@ -124,6 +124,71 @@
 				"PublicPort": "80"
 			}
 		}
-	}
+	},
+	"HDSlave3": {
+            "Type": "UPAC::VirtualMachine",
+            "Properties": {
+                "ServiceOfferingId": {
+                    "Ref": "ServiceOfferingId"
+                },
+                "TemplateId": {
+                    "Ref": "TemplateId"
+                },
+                "ZoneId": {
+                    "Ref": "ZoneId"
+                },
+                "UserData": {
+                    "Base64": {
+                        "Join": [
+                            "",
+                            [
+                                "MASTER_IP=\"",
+                                {
+                                    "GetAtt": [
+                                        "HDMaster",
+                                        "IpAddress"
+                                    ]
+                                },
+                                "\"\n"
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+	"dnat22": {
+            "Type": "UPAC::PortForwardingRule",
+            "Properties": {
+                "PrivatePort": "22",
+                "PublicPort": "22",
+                "Protocol": "TCP",
+                "VirtualMachineId": {
+                    "Ref": "HDMaster"
+                },
+                "IpAddressId": {
+                    "Ref": "IpAddress"
+                }
+            }
+        },
+   "Outputs": {
+        "password": {
+            "Description": "root password",
+            "Value": {
+                "GetAtt": [
+                    "HDMaster",
+                    "password"
+                ]
+            }
+        },
+        "Ip": {
+            "Description": "The IP address of the website",
+            "Value": {
+                "GetAtt": [
+                    "MyIpAddress",
+                    "ipaddress"
+                ]
+            }
+        }
+    }
 }
 
