@@ -60,9 +60,10 @@ cat << EOF > ${WWWROOT}/dbtest.php
 
   \$insert = 'INSERT INTO \`mysqlnd_test\` (\`id\`, \`val\`) VALUES ';
   for (\$i = 1; \$i <= \$row_count; \$i++) {
-    \$query = \$insert . '( "", "test' . \$i . '" ), ';
+    \$query = \$insert . '( "", "test' . \$i . '" );';
     \$link->query(\$query);
   }
+  \$link->commit();
 
   echo 'Start memory usage: ' . memory_get_usage() . PHP_EOL;
   \$result = \$link->query('SELECT * FROM mysqlnd_test LIMIT 10000;');
