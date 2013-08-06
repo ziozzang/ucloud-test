@@ -1,0 +1,129 @@
+{
+  "UPAC Template Version": "2012-06-01",
+	"Description": "Web-Service Architecture",
+	"Parameters": {
+		"ServiceOfferingId": {
+			"Description": "ServiceOfferingId for creating VM",
+			"Type": "String",
+			"Default": "c504e367-20d6-47c6-a82c-183b12d357f2"
+		},
+		"TemplateId": {
+			"Description": "TemplateId(disk image of VM) for creating VM",
+			"Type": "String",
+			"Default": "b1c8383a-de6e-425f-ba18-12cadad827d3"
+		},
+		"ZoneId": {
+			"Description": "Available zoneId in ucloud",
+			"Type": "String",
+			"Default": "9845bd17-d438-4bde-816d-1b12f37d5080"
+		},
+		"VMDiskOfferingId": {
+			"Description": "DiskOfferingId for creating VM",
+			"Type": "String",
+			"Default": "87c0a6f6-c684-4fbe-a393-d8412bcf788d"
+		}
+	},
+	"Resources": {
+		"DBServer": {
+			"Type": "UPAC::DB",
+			"Properties": {
+				"StorageSize": "80",
+				"PerfClass": "1x1",
+				"MaintenanceWeekday": "sun",
+				"ParameterGroupId": "9",
+				"DBMasterName": "bdms",
+				"DBMasterPassword": "bdms",
+				"DBName": "BDMSDBTest",
+				"DBEngineVersion": "5.5.27",
+				"UsagePlanType": "monthly",
+				"Zone": "kr-2"
+			}
+		},
+		"DBReplicationGroup": {
+			"Type": "UPAC::DB",
+			"Properties": {
+				"InstanceId": { "Ref" : "DBServer" },
+				"SlaveCount": "1"
+			}
+		},
+
+
+		"WebServer1": {
+			"Type": "UPAC::VirtualMachine",
+			"Properties": {
+				"ServiceOfferingId": { "Ref" : "ServiceOfferingId" },
+				"DisplayName": "WebServer1",
+				"TemplateId": { "Ref" : "TemplateId" },
+				"ZoneId": { "Ref" : "ZoneId" },
+				"DiskOfferingId": { "Ref" : "VMDiskOfferingId" }
+			}
+		},
+		"WebServer2": {
+			"Type": "UPAC::VirtualMachine",
+			"Properties": {
+				"ServiceOfferingId": { "Ref" : "ServiceOfferingId" },
+				"DisplayName": "WebServer2",
+				"TemplateId": { "Ref" : "TemplateId" },
+				"ZoneId": { "Ref" : "ZoneId" },
+				"DiskOfferingId": { "Ref" : "VMDiskOfferingId" }
+			}
+		},
+		"IpAddress": {
+			"Type": "UPAC::IpAddress",
+			"Properties": {
+				"ZoneId": { "Ref" : "ZoneId" }
+			}
+		},
+		"WAF": {
+			"Type": "UPAC::WAF",
+			"Properties": {
+				"Type": "dual",
+				"Spec": "basic",
+				"Waf1ConsolePort": "5950",
+				"Waf1SshPort": "5951",
+				"Waf1DbPort": "5952",
+				"ZoneId": { "Ref" : "ZoneId" }
+			}
+		},
+		"WebServerAddition1": {
+			"Type": "UPAC::WAFWebServerAddition",
+			"Properties": {
+				"WAFId": { "Ref": "WAF" },
+				"VirtualMachineId": { "Ref" : "WebServer1" },
+				"WebServerPort": "80",
+				"ProxyPort1": "80",
+				"SslMode": "disabled"
+			}
+		},
+		"WebServerAddition2": {
+			"Type": "UPAC::WAFWebServerAddition",
+			"Properties": {
+				"WAFId": { "Ref" : "WAF" },
+				"VirtualMachineId": { "Ref": "WebServer2" },
+				"WebServerPort": "80",
+				"ProxyPort1": "80",
+				"SslMode": "disabled"
+			}
+		},
+		"LoadBalancer":{
+			"Type":"UPAC::LoadBalancer",
+			"Properties":{
+				"LoadBalancerOption": "roundrobin",
+				"ServicePort": "80",
+				"HealthcheckType": "tcp",
+				"ServiceType": "http",
+				"ZoneId": { "Ref": "ZoneId" }
+			}
+		},
+		"LoadBalancerWebServerAddition":{
+			"Type":"UPAC::LoadBalancerWebServerAddition",
+			"Properties":{
+				"LoadBalancerId": { "Ref": "LoadBalancer" },
+				"VirtualMachineId": { "Ref": "???" },
+				"IpAddressId": { "Ref": "IpAddress" },
+				"PublicPort": "80"
+			}
+		}
+	}
+}
+
