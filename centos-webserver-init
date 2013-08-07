@@ -2,10 +2,10 @@
 
 # Env.
 WWWROOT="/var/www/html"
-MYSQL_HOST="localhost"
-MYSQL_ID="root"
-MYSQL_PW="password!@#$"
-MYSQL_DB="testdb"
+MYSQL_HOST=${MYSQL_HOST:-"localhost"}
+MYSQL_ID=${MYSQL_ID:-"root"}
+MYSQL_PW=${MYSQL_PW:-"password!@#$"}
+MYSQL_DB=${MYSQL_DB:-"testdb"}
 
 # Installation
 yum -y install httpd php mysql mysql-server php-mysql
