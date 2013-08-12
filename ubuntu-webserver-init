@@ -1,10 +1,10 @@
 #!/bin/bash
 # Env.
 WWWROOT="/var/www/html"
-MYSQL_HOST="localhost"
-MYSQL_ID="root"
-MYSQL_PW="password!@#$"
-MYSQL_DB="testdb"
+MYSQL_HOST=${MYSQL_HOST:-"localhost"}
+MYSQL_ID=${MYSQL_ID:-"root"}
+MYSQL_PW=${MYSQL_PW:-"password!@#$"}
+MYSQL_DB=${MYSQL_DB:-"testdb"}
 
 apt-get install -fy apache2 php5 libapache2-mod-php5 php5-mysqlnd
 service apache2 restart
