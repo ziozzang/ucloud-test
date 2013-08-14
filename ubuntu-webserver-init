@@ -6,9 +6,10 @@ MYSQL_ID=${MYSQL_ID:-"root"}
 MYSQL_PW=${MYSQL_PW:-"password!@#$"}
 MYSQL_DB=${MYSQL_DB:-"testdb"}
 
-
+# 다음쪽으로 변경해야 apt 리포가 빨라짐.
 sed -i -e "s,kr\.archive\.ubuntu\.com,ftp\.daum\.net,g" /etc/apt/sources.list
 
+# Update 를 해야 정상적으로 apt 패키지 설치가 됨
 apt-get update -fy
 #apt-get upgrade -fy
 
