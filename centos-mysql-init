@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Env.
+WWWROOT="/var/www/html"
+MYSQL_HOST=${MYSQL_HOST:-"localhost"}
+MYSQL_ID=${MYSQL_ID:-"root"}
+MYSQL_PW=${MYSQL_PW:-"password!@#$"}
+MYSQL_DB=${MYSQL_DB:-"testdb"}
+
+
+# Installation
+yum -y install mysql mysql-server
+
+# Turn off Firewall
+service iptables save
+service iptables stop
+chkconfig iptables off
+
+# Service Starting
+service mysqld start
+
+
+# MySQL update
+mysqladmin create ${MYSQL_DB}
+mysqladmin -u root password "${MYSQL_PW}"
